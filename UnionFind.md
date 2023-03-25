@@ -4,6 +4,8 @@
 
 ### [128.Longest Consecutive Sequence](https://leetcode.com/problems/longest-consecutive-sequence/)
 
+Java
+
 ```java
 class Solution {
     HashMap<Integer,Integer> parents;
@@ -41,11 +43,13 @@ class Solution {
 }
 ```
 
+python
+
 ``` python
 class Solution:
     def __init__(self):
-            self.parents = {}
-            self.count = {}
+        self.parents = {}
+        self.count = {}
 
     def longestConsecutive(self, nums: List[int]) -> int:
         for num in nums:
@@ -79,6 +83,8 @@ class Solution:
 
 ### [684. Redundant Connection](https://leetcode.com/problems/redundant-connection/description/)
 
+Java
+
 ``` java
 class Solution {
     HashMap<Integer,Integer> parents;
@@ -93,9 +99,9 @@ class Solution {
     }
 
     public int find(int x){
-        while (x != parents.getOrDefault(x, x))
-            x = parents.get(x);
-        return x;
+        if (x != parents.getOrDefault(x,x))
+            parents.put(x, find(parents.get(x)));
+        return parents.getOrDefault(x,x);
     }
 
     public void union(int x, int y){
@@ -107,7 +113,9 @@ class Solution {
 }
 ```
 
-```python
+python
+
+``` python
 class Solution:
     def __init__(self):
         self.parents = {}
@@ -121,15 +129,17 @@ class Solution:
         return edge
 
     def find(self, x: int):
-        while(x != self.parents.get(x, x)):
-            x = self.parents[x];
-        return x
+        if x != self.parents.get(x, x):
+            self.parents[x] = self.find(self.parents.get(x))
+        return self.parents.get(x, x)
 
     def union(self, a: int, b: int):
         a_parent, b_parent = self.find(a), self.find(b)
         if a_parent != b_parent:
             self.parents[a_parent] = b_parent
 ```
+
+
 
 
 
@@ -183,6 +193,8 @@ class Solution {
     }
 }
 ```
+
+python
 
 ```python
 class Solution:
@@ -283,6 +295,8 @@ class Solution {
     }
 }
 ```
+
+python
 
 ``` python
 class Solution:
@@ -506,7 +520,94 @@ def distanceLimitedPathsExist(self, n: int, edgeList: List[List[int]], queries: 
 
 
 
+### [2316. Count Unreachable Pairs of Nodes in an Undirected Graph](https://leetcode.com/problems/count-unreachable-pairs-of-nodes-in-an-undirected-graph/description/)
+
+Java
+
+``` java
+class Solution {
+    int[] parents;
+    int[] counts;
+    public long countPairs(int n, int[][] edges) {
+        parents = new int[n];
+        counts = new int[n];
+        for (int i = 0; i < n; i ++) {
+            parents[i] = i;
+            counts[i] = 1;
+        }
+        for (int[] edge : edges) {
+            union(edge[0], edge[1]);
+        }
+        List<Long> list = new ArrayList<>();
+        for (int i = 0; i < n; i ++) {
+            if (find(i) == i) {
+                list.add(counts[i] + 0L);
+            }
+        }
+        long total = n * (n - 1L) / 2;
+        long connectedPairs = 0;
+        for (long i : list) {
+            connectedPairs += i * (i - 1) / 2;
+        }
+        return total - connectedPairs;
+    }
+
+    public int find(int x){
+        if (x != parents[x])
+            parents[x] = find(parents[x]);
+        return parents[x];
+    }
+
+    public void union(int x, int y){
+        int x_parent = find(x), y_parent = find(y);
+        if (x_parent != y_parent){
+            parents[x_parent] = y_parent;
+            counts[y_parent] += counts[x_parent];
+        }
+    }
+}
+```
+
+python
+
+```python
+class Solution:
+    def __init__(self):
+        self.parents = {}
+        self.count = {}
+    
+    def countPairs(self, n: int, edges: List[List[int]]) -> int:
+        for i in range(n):
+            self.count[i] = 1
+        for edge in edges:
+            self.union(edge[0], edge[1])
+        lst = []
+        for i in range(n):
+            if self.find(i) == i:
+                lst.append(self.count[i])
+        total = n * (n - 1) // 2
+        connectedPairs = 0
+        for i in lst:
+            connectedPairs += i * (i - 1) // 2
+        return total - connectedPairs
+
+    def find(self, x: int):
+        if x != self.parents.get(x, x):
+            self.parents[x] = self.find(self.parents.get(x))
+        return self.parents.get(x, x)
+
+    def union(self, a: int, b: int):
+        a_parent, b_parent = self.find(a), self.find(b)
+        if a_parent != b_parent:
+            self.parents[a_parent] = b_parent
+            self.count[b_parent] += self.count.get(a_parent, 0)
+```
+
+
+
 ### [2492. Minimum Score of a Path Between Two Cities](https://leetcode.com/problems/minimum-score-of-a-path-between-two-cities/)
+
+Java
 
 ```java
 class Solution {
@@ -548,6 +649,8 @@ class Solution {
     }
 }
 ```
+
+python
 
 ```python
 class Solution:
