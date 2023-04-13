@@ -21,4 +21,4 @@
 - [LeetCode Database](./Database.md)
 - [LeetCode Multithread]()
 - [LeetCode UnionFind](./UnionFind.md)
-- [LeetCode Blind 75 Questions](./Blind75_LeetCode_Questions.md)
+- [LeetCode Blind 75 Questions](./Blind75.md)
