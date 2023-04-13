@@ -569,142 +569,416 @@ class Solution:
 
 ## Dynamic Programming
 
-### [aaa](bbb)
+### [70. Climbing Stairs](https://leetcode.com/problems/climbing-stairs/description/)
 
 java:
 
 ```java
-
+class Solution {
+    public int climbStairs(int n) {
+        if (n==1) return 1;
+        int[] opt = new int[n];
+        opt[0] = 1;
+        opt[1] = 2;
+        for (int i=2; i<n; i++){
+            opt[i] = opt[i-1] + opt[i-2];
+        }
+        return opt[n-1];
+    }
+}
 ```
 
 python3:
 
 ``` python
+class Solution:
+    def climbStairs(self, n: int) -> int:
+        if n==1: return 1
+        opt = [0 for _ in range(n)]
+        opt[0],opt[1] = 1,2
+        for i in range(2,n):
+            opt[i] = opt[i-1] + opt[i-2]
+        return opt[-1]
 ```
 
-[Climbing Stairs](https://leetcode.com/problems/climbing-stairs/)
+### [322. Coin Change](https://leetcode.com/problems/coin-change/)
 
-[Coin Change](https://leetcode.com/problems/coin-change/)
-
-[Longest Increasing Subsequence](https://leetcode.com/problems/longest-increasing-subsequence/)
-
-### [aaa](bbb)
+Complete knapsack problem
 
 java:
 
 ```java
-
+class Solution {
+    public int coinChange(int[] coins, int amount) {
+        int maxNum = amount+1;
+        int[] opt = new int[maxNum];
+        Arrays.fill(opt, maxNum);
+        opt[0] = 0;
+        for (int coin : coins) {
+            for (int j = coin; j < maxNum; j ++) {
+                opt[j] = Math.min(opt[j], opt[j-coin] + 1);
+            }
+        }
+        if (opt[amount] < maxNum)
+            return opt[amount];
+        else return -1;
+    }
+}
 ```
 
 python3:
 
 ``` python
-
+class Solution:
+    def coinChange(self, coins: List[int], amount: int) -> int:
+        maxNum = amount+1
+        opt = [maxNum for _ in range(amount+1)]
+        opt[0] = 0
+        for coin in coins:
+            for j in range(coin, maxNum):
+                opt[j] = min(opt[j], opt[j-coin]+1)
+        if opt[-1] < maxNum:
+            return opt[-1]
+        return -1
 ```
 
-### [aaa](bbb)
+### [300. Longest Increasing Subsequence](https://leetcode.com/problems/longest-increasing-subsequence/description/)
 
 java:
 
 ```java
-
+class Solution {
+    public int lengthOfLIS(int[] nums) {
+        if (nums.length == 1) return 1;
+        int result = 0;
+        int[] opt = new int[nums.length];
+        Arrays.fill(opt, 1);
+        for (int i = 1; i < nums.length; i++){
+            for (int j = 0; j < i; j ++) {
+                if (nums[i] > nums[j])
+                    opt[i] = Math.max(opt[i], opt[j]+1);
+            }
+            result = Math.max(result, opt[i]);
+        }
+        return result;
+    }
+}
 ```
 
 python3:
 
 ``` python
-
+class Solution:
+    def lengthOfLIS(self, nums: List[int]) -> int:
+        if len(nums) <= 1:
+            return len(nums)
+        opt = [1 for _ in range(len(nums))]
+        result = 0
+        for i in range(1, len(nums)):
+            for j in range(i):
+                if nums[i] > nums[j]:
+                    opt[i] = max(opt[i], opt[j]+1)
+            result = max(result, opt[i])
+        return result
 ```
 
-### [aaa](bbb)
+### [1143. Longest Common Subsequence](https://leetcode.com/problems/longest-common-subsequence/description/)
 
 java:
 
 ```java
-
+class Solution {
+    public int longestCommonSubsequence(String text1, String text2) {
+        char[] array1 = text1.toCharArray();
+        char[] array2 = text2.toCharArray();
+        int[][] opt = new int[array1.length+1][array2.length+1];
+        for (int i=1; i<array1.length+1; i++){
+            for (int j=1; j<array2.length+1; j++){
+                if (array1[i-1] == array2[j-1])
+                    opt[i][j] = opt[i-1][j-1] + 1;
+                else
+                    opt[i][j] = Math.max(opt[i][j-1], opt[i-1][j]);
+            }
+        }
+        return opt[array1.length][array2.length];
+    }
+}
 ```
 
 python3:
 
 ``` python
-
+class Solution:
+    def longestCommonSubsequence(self, text1: str, text2: str) -> int:
+        opt = [[0 for _ in range(len(text2)+1)] for _ in range(len(text1)+1)]
+        for i in range(1, len(text1)+1):
+            for j in range(1, len(text2)+1):
+                if text1[i-1] == text2[j-1]:
+                    opt[i][j] = opt[i-1][j-1] + 1
+                else:
+                    opt[i][j] = max(opt[i-1][j], opt[i][j-1])
+        return opt[-1][-1]
 ```
 
-### [aaa](bbb)
+### [139. Word Break](https://leetcode.com/problems/word-break/description/)
 
 java:
 
 ```java
-
+class Solution {
+    public boolean wordBreak(String s, List<String> wordDict) {
+        boolean[] opt = new boolean[s.length()+1];
+        Set<String> set = new HashSet<>(wordDict);
+        opt[0] = true;
+        for (int i=1; i<s.length()+1; i++){
+            for (int j=0; j<i; j++){
+                if (opt[j] && set.contains(s.substring(j, i))){
+                    opt[i] = true;
+                }
+            }
+        }
+        return opt[s.length()];
+    }
+}
 ```
 
 python3:
 
 ``` python
-
+class Solution:
+    def wordBreak(self, s: str, wordDict: List[str]) -> bool:
+        opt = [False for _ in range(len(s)+1)]
+        opt[0] = True
+        for i in range(1,len(s)+1):
+            for j in range(i):
+                word = s[j:i]
+                if opt[j] and word in wordDict:
+                    opt[i] = True
+        return opt[len(s)]
 ```
 
-### [aaa](bbb)
+### [377. Combination Sum IV](https://leetcode.com/problems/combination-sum-iv/)
+
+Complete knapsack problem
 
 java:
 
 ```java
-
+class Solution {
+    public int combinationSum4(int[] nums, int target) {
+        int[] opt = new int[target+1];
+        opt[0] = 1;
+        for (int i=1; i<target+1; i++)
+            for (int num : nums)
+                if (i >= num)
+                    opt[i] += opt[i - num];
+        return opt[target];
+    }
+}
 ```
 
 python3:
 
 ``` python
-
+class Solution:
+    def combinationSum4(self, nums: List[int], target: int) -> int:
+        opt = [0 for _ in range(target+1)]
+        opt[0] = 1
+        for i in range(1, target+1):
+            for j in nums:
+                if i>=j:
+                    opt[i] += opt[i - j]
+        return opt[-1]
 ```
 
-### [aaa](bbb)
+### [198. House Robber](https://leetcode.com/problems/house-robber/)
 
 java:
 
 ```java
-
+class Solution {
+    public int rob(int[] nums) {
+        if (nums.length == 1) return nums[0];
+        int[] opt = new int[nums.length];
+        opt[0] = nums[0];
+        opt[1] = Math.max(nums[0], nums[1]);
+        for (int i = 2; i<nums.length; i++){
+            opt[i] = Math.max(opt[i-2]+nums[i], opt[i-1]);
+        }
+        return opt[nums.length-1];
+    }
+}
 ```
 
 python3:
 
 ``` python
-
+class Solution:
+    def rob(self, nums: List[int]) -> int:
+        if len(nums) == 1:
+            return nums[0]
+        opt = [0 for _ in range(len(nums))]
+        opt[0] = nums[0]
+        opt[1] = max(nums[0], nums[1])
+        for i in range(2,len(nums)):
+            opt[i] = max(opt[i-2]+nums[i], opt[i-1])
+        return opt[-1]
 ```
 
-### [aaa](bbb)
+### [213. House Robber II](https://leetcode.com/problems/house-robber-ii/)
 
 java:
 
 ```java
-
+class Solution {
+    public int rob(int[] nums) {
+        if (nums.length==1) return nums[0];
+        if (nums.length==2) return Math.max(nums[0],nums[1]);
+        return Math.max(sub_rob(nums, 0, nums.length-2), sub_rob(nums, 1, nums.length-1));
+    }
+    private int sub_rob(int[] nums, int start, int end){
+        int prev = 0, curr = 0;
+        for (int i = start; i < end + 1; i++){
+            int temp = prev;
+            prev = curr;
+            curr = Math.max(temp+nums[i], curr);
+        }
+        return curr;
+    }
+}
 ```
 
 python3:
 
 ``` python
-
+class Solution:
+    def rob(self, nums: List[int]) -> int:
+        if len(nums) <= 2: return max(nums)
+        def sub_rob(sub_nums, start, end):
+            if end == start: return nums[start]
+            prev, curr = 0, 0
+            for i in range(start, end + 1):
+                prev, curr = curr, max(prev+nums[i], curr)
+            return curr
+        return max(sub_rob(nums, 0, len(nums)-2), sub_rob(nums, 1, len(nums)-1))
 ```
 
-### [aaa](bbb)
+### [91. Decode Ways](https://leetcode.com/problems/decode-ways/)
 
 java:
 
 ```java
-
+class Solution {
+    public int numDecodings(String s) {
+        char[] charArray = s.toCharArray();
+        if (charArray[0]=='0') return 0;
+        int[] opt = new int[charArray.length+1];
+        opt[0] = 1;
+        for (int i=1; i<charArray.length+1; i++){
+            if (charArray[i-1] != '0')
+                opt[i] = opt[i-1];
+            if (i>=2) {
+                int x = (charArray[i-2]-'0')*10 + (charArray[i-1]-'0');
+                if (10<=x && x<=26) opt[i] += opt[i-2];
+            }
+        }
+        return opt[charArray.length];
+    }
+}
 ```
 
 python3:
 
 ``` python
-
+class Solution:
+    def numDecodings(self, s: str) -> int:
+        if s[0] == '0': return 0
+        opt = [0 for _ in range(len(s) + 1)]
+        opt[0] = 1
+        for i in range(1, len(s)+1):
+            if s[i-1] != "0":
+                opt[i] = opt[i-1]
+            if i > 1:
+                num = int(s[i-2: i])
+                if 10 <= num <= 26:
+                    opt[i] += opt[i-2]
+        return opt[-1]
 ```
 
+### [62. Unique Paths](https://leetcode.com/problems/unique-paths/description/)
 
+java:
 
+```java
+class Solution {
+    public int uniquePaths(int m, int n) {
+        int[] opt = new int[n];
+        Arrays.fill(opt, 1);
+        for (int i=1; i<m; i++){
+            for (int j=1; j<n; j++){
+                opt[j] = opt[j-1] + opt[j];
+            }
+        }
+        return opt[n-1];
+    }
+}
+```
 
+python3:
 
+``` python
+class Solution:
+    def uniquePaths(self, m: int, n: int) -> int:
+        opt = [1 for _ in range(n)]
+        for i in range(1,m):
+            for j in range(1,n):
+                opt[j] = opt[j] + opt[j-1]
+        return opt[n-1]
+```
 
+### [55. Jump Game](https://leetcode.com/problems/jump-game/description/)
+
+java:
+
+```java
+class Solution {
+    public boolean canJump(int[] nums) {
+        if (nums.length == 1) return true;
+        int max = nums[0];
+        for (int i = 1; i < nums.length - 1; i++) {
+            if (max == 0) return false;
+            max--;
+            max = Math.max(max, nums[i]);
+        }
+        return max > 0;
+    }
+}
+```
+
+python3:
+
+``` python
+class Solution:
+    def canJump(self, nums: List[int]) -> bool:
+        if len(nums)==1: return True
+        steps = nums[0]
+        for i in range(1, len(nums)-1):
+            if steps == 0: return False
+            steps -= 1
+            steps = max(steps, nums[i])
+        return steps > 0
+```
+
+### Knapsack recursion formula
+
+- Ask if you can fill the backpack (or how much you can hold at most)
+  - `dp[j] = max(dp[j], dp[j - nums[i]] + nums[i]);`
+- Ask how many ways to fill a backpack
+  - `dp[j] += dp[j - nums[i]]`
+- Ask the maximum value of the backpack full
+  - `dp[j] = max(dp[j], dp[j - weight[i]] + value[i])`
+- Ask the minimum number of all items in a full backpack
+  - `dp[j] = min(dp[j - coins[i]] + 1, dp[j])`
 
 ## Graph
 
@@ -762,30 +1036,27 @@ java:
 ```java
 class Solution {
     public boolean canFinish(int numCourses, int[][] prerequisites) {
-        HashMap<Integer, ArrayList<Integer>> hashmap = new HashMap<>();
-        int[] numpreq = new int[numCourses];
+        ArrayList<Integer>[] preqmap = new ArrayList[numCourses];
+        for (int i = 0; i < numCourses; i ++)
+            preqmap[i] = new ArrayList<>();
+        int[] preqnum = new int[numCourses];
         for (int[] prerequisite : prerequisites){
-            ArrayList<Integer> temp;
-            if (hashmap.containsKey(prerequisite[1]))
-                temp = hashmap.get(prerequisite[1]);
-            else
-                temp = new ArrayList<>();
-            temp.add(prerequisite[0]);
-            hashmap.put(prerequisite[1], temp);
-            numpreq[prerequisite[0]] += 1;
+            preqmap[prerequisite[1]].add(prerequisite[0]);
+            preqnum[prerequisite[0]] ++;
         }
         Queue<Integer> queue = new LinkedList<>();
-        int result = 0;
-        for (int i = 0; i < numpreq.length; i++){
-            if (numpreq[i] == 0)
-              queue.add(i);  
+        for (int i = 0; i < preqnum.length; i++){
+            if (preqnum[i] == 0)
+                queue.add(i);  
         }
+        int result = 0;
+        
         while (queue.size()>0){
             int u = queue.poll();
             result ++;
-            for (int v : hashmap.getOrDefault(u, new ArrayList<>())){
-                numpreq[v] --;
-                if (numpreq[v] == 0)
+            for (int v : preqmap[u]){
+                preqnum[v] --;
+                if (preqnum[v] == 0)
                     queue.add(v);
             }
         }
@@ -816,91 +1087,225 @@ class Solution:
         return result == numCourses
 ```
 
-### [aaa](bbb)
+### [417. Pacific Atlantic Water Flow](https://leetcode.com/problems/pacific-atlantic-water-flow/description/)
 
 java:
 
 ```java
-
+class Solution {
+    public List<List<Integer>> pacificAtlantic(int[][] heights) {
+        int rows = heights.length, cols = heights[0].length;
+        boolean[][] pacific = new boolean[rows][cols];
+        boolean[][] atlantic = new boolean[rows][cols];
+        List<List<Integer>> res = new ArrayList<>();
+        for (int i = 0; i<rows; i++){
+            dfs(heights, i, 0, rows, cols, pacific, heights[i][0]);
+            dfs(heights, i, cols-1, rows, cols, atlantic, heights[i][cols-1]);
+        }
+        for (int j = 0; j< cols; j++){
+            dfs(heights, 0, j, rows, cols, pacific, heights[0][j]);
+            dfs(heights, rows-1, j ,rows, cols, atlantic, heights[rows-1][j]);
+        }
+        for (int i = 0; i < rows; i ++){
+            for (int j = 0; j < cols; j ++) {
+                if (pacific[i][j] & atlantic[i][j])
+                    res.add(List.of(i, j));
+            }
+        }
+        return res;
+    }
+    public void dfs (int[][] heights, int i, int j, int rows, int cols, boolean[][] visited, int prevHeight){
+        if (i < 0 || i >= rows || j < 0 || j >= cols)
+            return;
+        if (visited[i][j] || prevHeight > heights[i][j])
+            return;
+        visited[i][j] = true;
+        dfs(heights, i-1, j, rows, cols, visited, heights[i][j]);
+        dfs(heights, i+1, j, rows, cols, visited, heights[i][j]);
+        dfs(heights, i, j-1, rows, cols, visited, heights[i][j]);
+        dfs(heights, i, j+1, rows, cols, visited, heights[i][j]);
+    }
+}
 ```
 
 python3:
 
 ``` python
-
+class Solution:
+    def pacificAtlantic(self, heights: List[List[int]]) -> List[List[int]]:
+            rows, cols = len(heights), len(heights[0])
+            pacific = [[False for _ in range(cols)] for _ in range(rows)]
+            atlantic = [[False for _ in range(cols)] for _ in range(rows)]
+            res = []
+            for i in range(rows):
+                self.dfs(heights, i, 0, rows, cols, pacific, heights[i][0])
+                self.dfs(heights, i, cols-1, rows, cols, atlantic, heights[i][cols-1])
+            for j in range(cols):
+                self.dfs(heights, 0, j, rows, cols, pacific, heights[0][j])
+                self.dfs(heights, rows-1, j ,rows, cols, atlantic, heights[rows-1][j])
+            for i in range(rows):
+                for j in range(cols):
+                    if pacific[i][j] & atlantic[i][j]:
+                        res.append([i,j])
+            return res
+    
+    def dfs(self, heights, i, j, rows, cols, visited, prevHeight):
+        if i < 0 or i >= rows or j < 0 or j >= cols:
+            return
+        if visited[i][j] or prevHeight > heights[i][j]:
+            return
+        visited[i][j] = True
+        self.dfs(heights, i-1, j, rows, cols, visited, heights[i][j])
+        self.dfs(heights, i+1, j, rows, cols, visited, heights[i][j])
+        self.dfs(heights, i, j-1, rows, cols, visited, heights[i][j])
+        self.dfs(heights, i, j+1, rows, cols, visited, heights[i][j])
 ```
 
-### [aaa](bbb)
+### [200. Number of Islands](https://leetcode.com/problems/number-of-islands/description/)
 
 java:
 
 ```java
+class Solution {
+    public int numIslands(char[][] grid) {
+        int res = 0;
+        for (int i = 0; i < grid.length; i ++) {
+            for (int j = 0; j < grid[0].length; j ++) {
+                if (grid[i][j] == '1'){
+                    dfs(grid, i, j);
+                    res ++;
+                }
+            }
+        }
+        return res;
+    }
 
+    public void dfs(char[][] grid, int i, int j) {
+        if (grid[i][j] == '0') return;
+        grid[i][j] = '0';
+        if (i > 0) dfs(grid, i-1, j);
+        if (i < grid.length - 1) dfs(grid, i+1, j);
+        if (j > 0) dfs(grid, i, j-1);
+        if (j < grid[0].length - 1) dfs(grid, i, j+1);
+    }
+}
 ```
 
 python3:
 
 ``` python
+class Solution:
+    def numIslands(self, grid: List[List[str]]) -> int:
+        count = 0
+        for i in range(len(grid)):
+            for j in range(len(grid[0])):
+                if grid[i][j] == '1':
+                    self.dfs(grid, i, j)
+                    count += 1
+        return count
 
+    def dfs(self, grid, i, j):
+        if grid[i][j] == '0': return
+        grid[i][j] = '0'
+        if i > 0: 
+            self.dfs(grid, i-1, j)
+        if i < len(grid) - 1: 
+            self.dfs(grid, i+1, j)
+        if j > 0:
+            self.dfs(grid, i, j-1)
+        if j < len(grid[0]) - 1: 
+            self.dfs(grid, i, j+1)
 ```
 
-### [aaa](bbb)
+### [128. Longest Consecutive Sequence](https://leetcode.com/problems/longest-consecutive-sequence/description/)
 
 java:
 
 ```java
+class Solution {
+    HashMap<Integer,Integer> parents;
+    HashMap<Integer,Integer> counts;
+    public int longestConsecutive(int[] nums) {
+        parents = new HashMap<>();
+        counts = new HashMap<>();
+        for (int num : nums) counts.put(num, 1);
+        for (int num : nums) union(num, num+1);
+        int res = 0;
+        for (int num : counts.values()) 
+            res = Math.max(res, num);
+        return res;
+    }
 
+    public int find(int x){
+        if (x != parents.getOrDefault(x, x))
+            parents.put(x, find(parents.get(x)));
+        return parents.getOrDefault(x, x);
+    }
+
+    public void union(int x, int y){
+        int x_parent = find(x), y_parent = find(y);
+        int x_size = counts.getOrDefault(x_parent, 0);
+        int y_size = counts.getOrDefault(y_parent, 0);
+        if (x_parent != y_parent){
+            if (x_size < y_size){
+                parents.put(x_parent,y_parent);
+                counts.put(y_parent, x_size + y_size);
+            }else{
+                parents.put(y_parent,x_parent);
+                counts.put(x_parent, x_size + y_size);
+            }
+        }
+    }
+}
 ```
 
 python3:
 
 ``` python
+class Solution:
+    def __init__(self):
+        self.parents = {}
+        self.count = {}
 
+    def longestConsecutive(self, nums: List[int]) -> int:
+        for num in nums:
+            self.count[num] = 1
+        for num in nums:
+            self.union(num, num+1)
+        if nums:
+            return max(self.count.values())
+        else: 
+            return 0
+    
+    def find(self, x: int) -> int:
+        if x != self.parents.get(x, x):
+            self.parents[x] = self.find(self.parents.get(x))
+        return self.parents.get(x, x)
+
+    def union(self, a: int, b: int):
+        a_parent, b_parent = self.find(a), self.find(b)
+        a_size, b_size = self.count.get(a_parent, 0), self.count.get(b_parent, 0)
+        
+        if a_parent != b_parent:
+            if a_size < b_size:
+                self.parents[a_parent] = b_parent
+                self.count[b_parent] += a_size
+            else:
+                self.parents[b_parent] = a_parent
+                self.count[a_parent] += b_size
 ```
 
-### [aaa](bbb)
+### [Alien Dictionary](https://leetcode.com/problems/alien-dictionary/)
 
-java:
+(Leetcode Premium)
 
-```java
+### [Graph Valid Tree](https://leetcode.com/problems/graph-valid-tree/)
 
-```
+(Leetcode Premium)
 
-python3:
+### [Number of Connected Components in an Undirected Graph](https://leetcode.com/problems/number-of-connected-components-in-an-undirected-graph/)
 
-``` python
-
-```
-
-### [aaa](bbb)
-
-java:
-
-```java
-
-```
-
-python3:
-
-``` python
-
-```
-
-### [aaa](bbb)
-
-java:
-
-```java
-
-```
-
-python3:
-
-``` python
-
-```
-
-
+(Leetcode Premium)
 
 ## Interval
 
@@ -1605,32 +2010,121 @@ class Solution:
         return maxlength
 ```
 
-### [\424. Longest Repeating Character Replacement](bbb)
+### [424. Longest Repeating Character Replacement](https://leetcode.com/problems/longest-repeating-character-replacement/submissions/932212710/)
 
 java:
 
 ```java
-
+class Solution {
+    public int characterReplacement(String s, int k) {
+        int[] arr = new int[26];
+        char[] charArray = s.toCharArray();
+        int maxlen = 0, largestCount = 0;
+        for(int i = 0; i < charArray.length; i ++){
+            arr[charArray[i] - 'A'] ++;
+            largestCount = Math.max(largestCount, arr[charArray[i] - 'A']);
+            if (maxlen - largestCount >= k)
+                arr[charArray[i - maxlen] - 'A'] --;
+            else
+                maxlen ++;
+        }
+        return maxlen;
+    }
+}
 ```
 
 python3:
 
 ``` python
-
+class Solution:
+    def characterReplacement(self, s: str, k: int) -> int:
+        maxlen, largestCount = 0, 0
+        arr = collections.Counter()
+        for i in range(len(s)):
+            arr[s[i]] += 1
+            largestCount = max(largestCount, arr[s[i]])
+            if maxlen - largestCount >= k:
+                arr[s[i - maxlen]] -= 1
+            else:
+                maxlen += 1
+        return maxlen
 ```
 
-### [\76. Minimum Window Substring](bbb)
+### [76. Minimum Window Substring](https://leetcode.com/problems/minimum-window-substring/)
 
 java:
 
 ```java
-
+class Solution {
+    public String minWindow(String s, String t) {
+        if (s==null || t==null || s.length() < t.length()) 
+            return "";
+        if (s.equals(t)) return s;
+        int[] window = new int[58];
+        char[] sArray = s.toCharArray();
+        char[] tArray = t.toCharArray();
+        for (char c : tArray)
+            window[c-'A'] += 1;
+        int minlength = sArray.length+1, missChar = tArray.length;
+        int left = 0, right = 0, minleft = 0;
+        
+        while (right < sArray.length){
+            if (window[sArray[right]-'A'] > 0)
+                missChar --;
+            window[sArray[right]-'A'] --;
+            right ++;
+            while (missChar == 0){
+                if (right-left < minlength){
+                    minlength = right - left;
+                    minleft = left;
+                }
+                window[sArray[left]-'A'] ++;
+                if (window[sArray[left]-'A'] > 0)
+                    missChar ++;
+                left ++;
+            }
+        }
+        if (minlength != sArray.length+1)
+            return s.substring(minleft, minleft+minlength);
+        return "";
+    }
+}
 ```
 
 python3:
 
 ``` python
-
+class Solution:
+    def minWindow(self, s: str, t: str) -> str:
+        if not s or not t or len(s)<len(t):
+            return ""
+        if s == t: return s
+        dic_t = {}
+        for char in s: dic_t[char] = 0
+        for char in t:
+            if char in dic_t:
+                dic_t[char] += 1
+            else: return ""
+        counter = len(t)
+        left,right, minleft, minlength = 0, 0, 0, float('inf')
+        
+        while right < len(s):
+            if dic_t[s[right]] > 0: 
+                counter -= 1
+            dic_t[s[right]] -= 1
+            right+=1
+            while counter == 0:
+                if right-left < minlength:
+                    minlength = right - left
+                    minleft = left
+                dic_t[s[left]] += 1
+                if dic_t[s[left]] > 0:
+                    counter += 1
+                left += 1
+        
+        if minlength != float('inf'):
+            return s[minleft:minleft+minlength]
+        return ""
 ```
 
 ### [242. Valid Anagram](https://leetcode.com/problems/valid-anagram/description/)
@@ -2852,33 +3346,149 @@ class MedianFinder:
 
 
 
-## Important Link
+## [14 Patterns to Ace Any Coding Interview Question](https://hackernoon.com/14-patterns-to-ace-any-coding-interview-question-c5bb3357f6ed)
 
-### [14 Patterns to Ace Any Coding Interview Question](https://hackernoon.com/14-patterns-to-ace-any-coding-interview-question-c5bb3357f6ed)
-
-- One of the most common points of anxiety developers
+- One of the most common points of anxiety developers:
 
   - **Have I solved enough practice questions? Could I have done more?**
 
-  If you understand the generic patterns, you can use them as a template to solve a myriad of other problems with slight variations.
-
-  Here, I’ve laid out the top 14 patterns that can be used to solve any coding interview question, as well as how to identify each pattern, and some example questions for each.
+- If you understand the generic patterns, you can use them as a template to solve a myriad of other problems with slight variations. Here, I’ve laid out the top **14 patterns** that can be used to solve any coding interview question, as well as **how to identify each pattern** for each:
 
 1. **Sliding Window**
-   - s
+
+   - The Sliding Window pattern is used to perform a required operation on a specific window size of a given array or linked list, such as finding the longest subarray containing all 1s. Sliding Windows start from the 1st element and keep shifting right by one element and adjust the length of the window according to the problem that you are solving. In some cases, the window size remains constant and in other cases the sizes grows or shrinks.
+
+   - **Ways to identify when to use the sliding window pattern**:
+     - The problem input is a linear data structure such as a linked list, array, or string
+     - You’re asked to find the longest/shortest substring, subarray, or a desired value
+
 2. **Two Pointers or Iterators**
+
+   - Two Pointers is a pattern where two pointers iterate through the data structure in tandem until one or both of the pointers hit a certain condition. Two Pointers is often useful when searching pairs in a sorted array or linked list; for example, when you have to compare each element of an array to its other elements.
+   - Two pointers are needed because with just pointer, you would have to continually loop back through the array to find the answer. This back and forth with a single iterator is inefficient for time and space complexity — a concept referred to as asymptotic analysis. While the brute force or naive solution with 1 pointer would work, it will produce something along the lines of O(n²). In many cases, two pointers can help you find a solution with better space or runtime complexity.
+   - **Ways to identify when to use the Two Pointer pattern:**
+     - It will feature problems where you deal with sorted arrays (or Linked Lists) and need to find a set of elements that fulfill certain constraints
+     - The set of elements in the array is a pair, a triplet, or even a subarray
+
 3. **Fast and Slow pointers**
+
+   - The Fast and Slow pointer approach, also known as the **Hare & Tortoise algorithm**, is a pointer algorithm that uses two pointers which move through the array (or sequence/linked list) at different speeds. **This approach is quite useful when dealing with cyclic linked lists or arrays.**
+   - **Ways to identify when to use the Fast and Slow pattern:**
+     - The problem will deal with a loop in a linked list or array
+     - When you need to know the position of a certain element or the overall length of the linked list.
+
 4. **Merge Intervals**
+
+   - The Merge Intervals pattern is an efficient technique to deal with overlapping intervals. In a lot of problems involving intervals, you either need to find overlapping intervals or merge intervals if they overlap. The pattern works like this:
+   - Given two intervals (‘a’ and ‘b’), there will be six different ways the two intervals can relate to each other
+   - Understanding and recognizing these six cases will help you help you solve a wide range of problems from inserting intervals to optimizing interval merges.
+   - **Ways to identify when to use the Merge Intervals pattern:**
+     - If you’re asked to produce a list with only mutually exclusive intervals
+     - If you hear the term “overlapping intervals”.
+
 5. **Cyclic sort**
+
+   - This pattern describes an interesting approach to deal with problems involving arrays containing numbers in a given range. The Cyclic Sort pattern iterates over the array one number at a time, and if the current number you are iterating is not at the correct index, you swap it with the number at its correct index. You could try placing the number in its correct index, but this will produce a complexity of O(n^2) which is not optimal, hence the Cyclic Sort pattern.
+   - **Ways to identify when to use the Cyclic sort pattern:**
+     - They will be problems involving a sorted array with numbers in a given range
+     - If the problem asks you to find the missing/duplicate/smallest number in an sorted/rotated array
+
 6. **In-place reversal of linked list**
+
+   - In a lot of problems, you may be asked to reverse the links between a set of nodes of a linked list. Often, the constraint is that you need to do this in-place, i.e., using the existing node objects and without using extra memory. This is where the above mentioned pattern is useful.
+
+   - This pattern reverses one node at a time starting with one variable (current) pointing to the head of the linked list, and one variable (previous) will point to the previous node that you have processed. In a lock-step manner, you will reverse the current node by pointing it to the previous before moving on to the next node. Also, you will update the variable “previous” to always point to the previous node that you have processed.
+
+     <img src="https://hackernoon.imgix.net/images/G9YRlqC9joZNTWsi1ul7tRkO6tv1-gekl3wfd.jpg?auto=format&fit=max&w=1920" style="zoom:33%;" />
+
+   - **Ways to identify when to use the reversal pattern:**
+
+     - If you’re asked to reverse a linked list without using extra memory
+
 7. **Tree BFS**
+
+   - This pattern is based on the Breadth First Search (BFS) technique to traverse a tree and uses a queue to keep track of all the nodes of a level before jumping onto the next level. Any problem involving the traversal of a tree in a level-by-level order can be efficiently solved using this approach.
+   - The Tree BFS pattern works by pushing the root node to the queue and then continually iterating until the queue is empty. For each iteration, we remove the node at the head of the queue and “visit” that node. After removing each node from the queue, we also insert all of its children into the queue.
+   - **Ways to identify when to use the Tree BFS pattern:**
+     - If you’re asked to traverse a tree in a level-by-level fashion (or level order traversal)
+
 8. **Tree DFS**
+
+   - Tree DFS is based on the Depth First Search (DFS) technique to traverse a tree.
+   - You can use recursion (or a stack for the iterative approach) to keep track of all the previous (parent) nodes while traversing.
+   - The Tree DFS pattern works by starting at the root of the tree, if the node is not a leaf you need to do three things:
+     - Decide whether to process the current node now (pre-order), or between processing two children (in-order) or after processing both children (post-order).
+     - Make two recursive calls for both the children of the current node to process them.
+   - **Ways to identify when to use the Tree DFS pattern:**
+     - If you’re asked to traverse a tree with in-order, preorder, or postorder DFS
+     - If the problem requires searching for something where the node is closer to a leaf
+
 9. **Two heaps**
+
+   - In many problems, we are given a set of elements such that we can divide them into two parts. To solve the problem, we are interested in knowing the smallest element in one part and the biggest element in the other part. This pattern is an efficient approach to solve such problems.
+   - This pattern uses two heaps; A Min Heap to find the smallest element and a Max Heap to find the biggest element. The pattern works by storing the first half of numbers in a Max Heap, this is because you want to find the largest number in the first half. You then store the second half of numbers in a Min Heap, as you want to find the smallest number in the second half. At any time, the median of the current list of numbers can be calculated from the top element of the two heaps.
+   - **Ways to identify the Two Heaps pattern:**
+     - Useful in situations like Priority Queue, Scheduling
+     - If the problem states that you need to find the smallest/largest/median elements of a set
+     - Sometimes, useful in problems featuring a binary tree data structure
+
 10. **Subsets**
+
+    - A huge number of coding interview problems involve dealing with Permutations and Combinations of a given set of elements. The pattern Subsets describes an efficient Breadth First Search (BFS) approach to handle all these problems.
+    - **Ways to identify the Subsets pattern:**
+      - Problems where you need to find the combinations or permutations of a given set
+
 11. **Modified binary search**
+
+    - Whenever you are given a sorted array, linked list, or matrix, and are asked to find a certain element, the best algorithm you can use is the Binary Search. This pattern describes an efficient way to handle all problems involving Binary Search.
+    - The patterns looks like this for an ascending order set:
+      - First, find the middle of start and end. An easy way to find the middle would be: middle = (start + end) / 2. But this has a good chance of producing an integer overflow so it’s recommended that you represent the middle as: middle = start + (end — start) / 2
+      - If the key is equal to the number at index middle then return middle
+      - If ‘key’ isn’t equal to the index middle:
+      - Check if key < arr[middle]. If it is reduce your search to end = middle - 1
+      - Check if key > arr[middle]. If it is reduce your search to end = middle + 1
+
 12. **Top K elements**
+
+    - Any problem that asks us to find the top/smallest/frequent ‘K’ elements among a given set falls under this pattern.
+    - The best data structure to keep track of ‘K’ elements is Heap. This pattern will make use of the Heap to solve multiple problems dealing with ‘K’ elements at a time from a set of given elements. The pattern looks like this:
+      - Insert ‘K’ elements into the min-heap or max-heap based on the problem.
+      - Iterate through the remaining numbers and if you find one that is larger than what you have in the heap, then remove that number and insert the larger one.
+    - **Ways to identify when to use the Top ‘K’ Elements pattern:**
+      - If you’re asked to find the top/smallest/frequent ‘K’ elements of a given set
+      - If you’re asked to sort an array to find an exact element
+
 13. **K-way Merge**
+
+    - K-way Merge helps you solve problems that involve a set of sorted arrays.
+    - Whenever you’re given ‘K’ sorted arrays, you can use a Heap to efficiently perform a sorted traversal of all the elements of all arrays. You can push the smallest element of each array in a Min Heap to get the overall minimum. After getting the overall minimum, push the next element from the same array to the heap. Then, repeat this process to make a sorted traversal of all elements.
+    - **Ways to identify when to use the K-way Merge pattern:**
+      - The problem will feature sorted arrays, lists, or a matrix
+      - If the problem asks you to merge sorted lists, find the smallest element in a sorted list.
+
 14. **Topological sort**
+
+    - Topological Sort is used to find a linear ordering of elements that have dependencies on each other. For example, if event ‘B’ is dependent on event ‘A’, ‘A’ comes before ‘B’ in topological ordering.
+    - This pattern defines an easy way to understand the technique for performing topological sorting of a set of elements.
+    - The pattern works like this:
+      1. Initialization
+         a) Store the graph in adjacency lists by using a HashMap
+         b) To find all sources, use a HashMap to keep the count of in-degreesBuild the graph and find in-degrees of all vertices
+      2. Build the graph from the input and populate the in-degrees HashMap.
+      3. Find all sources
+         a) All vertices with ‘0’ in-degrees will be sources and are stored in a Queue.
+      4. Sort
+         a) For each source, do the following things:
+         —i) Add it to the sorted list.
+         — ii)Get all of its children from the graph.
+         — iii)Decrement the in-degree of each child by 1.
+         — iv)If a child’s in-degree becomes ‘0’, add it to the sources Queue.
+         b) Repeat (a), until the source Queue is empty.
+
+    - **Ways to identify when to use the Topological Sort pattern:**
+      - The problem will deal with graphs that have no directed cycles
+      - If you’re asked to update all objects in a sorted order
+      - If you have a class of objects that follow a particular order
 
 
 
