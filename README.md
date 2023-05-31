@@ -1,10 +1,11 @@
 # Leetcode-Problems
+
 ### Menu
 
 - [LeetCode Array]()
 - [LeetCode Linked List]()
 - [LeetCode Binary Tree]()
-- [LeetCode Hash Table]()
+- [LeetCode HashTable](./Hashtable.md)
 - [LeetCode String]()
 - [LeetCode Bit Menupulation]()
 - [LeetCode Binary search]()
@@ -21,4 +22,4 @@
 - [LeetCode Database](./Database.md)
 - [LeetCode Multithread]()
 - [LeetCode UnionFind](./UnionFind.md)
-- [LeetCode Blind 75 Questions](./Blind75.md)
+- [LeetCode Blind 75 Questions](./Blind75_LeetCode_Questions.md)
